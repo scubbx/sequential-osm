@@ -7,7 +7,7 @@ import eventlet
 currentTreeData = [] # just to initialize
 
 def elementReader(filename):
-    couchPusher = mpcouch.mpcouchPusher("http://localhost:5984/osmnodes",10000)
+    couchPusher = mpcouch.mpcouchPusher("http://localhost:5984/osmnodes",10000, threads=False)
     def gotCompleteEntry(entry):
         couchPusher.pushData({'data':entry})
         pass
@@ -38,11 +38,11 @@ def elementReader(filename):
             #lon = float(currentTreeData[0][u'lon'])
             #lat = float(currentTreeData[0][u'lat'])
             #idx.insert(int(currentTreeData[0][u'id']), (lon, lat, lon, lat), obj=currentTreeData)
-            #print(currentTreeData)
-            #gotCompleteEntry(currentTreeData)
+            if 'natural' in currentTreeData[1]:
+                if currentTreeData[1]['natural'] == 'tree': gotCompleteEntry(currentTreeData)
             #e = eventlet.spawn(gotCompleteEntry,currentTreeData)
-            e = eventlet.spawn(couchPusher.pushData,{'data':currentTreeData})
-            e.wait()
+            #e = eventlet.spawn(couchPusher.pushData,{'data':currentTreeData})
+            #e.wait()
             
     
     def char_osm_data(data):
